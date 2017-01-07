@@ -22,5 +22,10 @@ Deaths can take advantage of this, however. Prediction and gamesense is key - Go
 	* Available only during the round state WAITING FOR PLAYERS. This command respawns you at the start of the map in case you get stuck anywhere.
 * Cleanup - !cleanup
 	* Available only during the round state WAITING FOR PLAYERS. This command cleans up the map and all it's entities, thus resetting all the traps so that you can practice the course again.
-
+* SetLives - !setlives <player> <lives> or !setlives <lives>
+    * This command set lives to any runner
+    * Only work if deathrun_enablelives is enabled
+* GetLives - !getlives or !getlives <player>
+    * This command get lives to any runner
+    * Only work if deathrun_enablelives is enabled
 

@@ -1,6 +1,7 @@
 print("Loading Commands for LIVE System By Doc...")
 
 concommand.Add("deathrun_setlives",function(ply, cmd, args)
+	if GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
 	if args[1] and args[2] then
 		local targets = FindPlayersByName( args[1] )
 		local newLives = tonumber(args[2])
@@ -9,7 +10,7 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 		if DR:CanAccessCommand( ply, cmd ) then
 		
 			if type(newLives) == "number" then
-				if newLives == 0 or newLives > 10 then DeathrunSafeChatPrint( ply, "The value of lives is [1-10]") return end
+				if newLives == 0 or newLives > 20 then DeathrunSafeChatPrint( ply, "The value of lives is [1-10]") return end
 				local players = ""
 				if #targets > 0 then
 					-- for k, targ in ipairs( targets ) do
@@ -40,7 +41,7 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 		
 		if DR:CanAccessCommand( ply, cmd ) then
 			if type(newLives) == "number" then
-				if newLives == 0 or newLives > 10 then DeathrunSafeChatPrint( ply, "The value of lives is [1-10]") return end
+				if newLives == 0 or newLives > 20 then DeathrunSafeChatPrint( ply, "The value of lives is [1-10]") return end
 				if ply:Team() == TEAM_RUNNER then
 					tableLives[ply:SteamID64()] = newLives
 					DeathrunSafeChatPrint( ply, "Your have now have " .. newLives .. " lives" )
@@ -60,6 +61,7 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
 
 concommand.Add("deathrun_getlives",function(ply, cmd, args)
+	if GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
 	if args[1] then
 		local targets = FindPlayersByName( args[1] )
 		local cont = false

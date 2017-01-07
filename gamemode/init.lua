@@ -470,8 +470,8 @@ function GM:EntityTakeDamage( target, dmginfo )
 
 	if target:IsPlayer() then
 		if ROUND:GetCurrent() == ROUND_WAITING or ROUND:GetCurrent() == ROUND_PREP then
-			target:DeathrunChatPrint("You took "..tostring(dmginfo:GetDamage()).." damage. but the damage has canceled¿")
-			--dmginfo:SetDamage(0)
+			target:DeathrunChatPrint("You took "..tostring(dmginfo:GetDamage()).." damage. but the damage has canceled.")
+			dmginfo:SetDamage(0)
 		end
 	end
 	if target:IsPlayer() and attacker:IsPlayer() then

@@ -94,6 +94,13 @@ SERVER CONVARS:
 	deathrun_starting_weapon <string weapon name>
 		Default starting weapon
 
+	deathrun_enablelives <0-1>
+	    Enable lives systems for runners - 1 for enabled, 0 for disables. DEFAULT 0
+
+	deathrun_runner_lives <1-20>
+	    Lives for runners (deaths not have lives, ARE DEATHS :D), This cvar only work if deathrun_enablelives is enabled.
+	    Dont set this convar to 0.
+
 CLIENT CONVARS:
 
 	deathrun_crosshair_thickness <0-999>
