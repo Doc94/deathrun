@@ -3,7 +3,7 @@ print("Loading Commands for LIVE System By Doc...")
 concommand.Add("deathrun_setlives",function(ply, cmd, args)
 	if args[1] and args[2] then
 		local targets = FindPlayersByName( args[1] )
-		local newLives = args[2]
+		local newLives = tonumber(args[2])
 		local cont = false
 
 		if DR:CanAccessCommand( ply, cmd ) then
@@ -36,17 +36,22 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 			DeathrunSafeChatPrint( ply, "You are not allowed to do that.")
 		end
 	elseif args[1] then
-		local newLives = args[1]
-		if type(newLives) == "number" then
-			if newLives == 0 or newLives > 10 then DeathrunSafeChatPrint( ply, "The value of lives is [1-10]") return end
-			if ply:Team() == TEAM_RUNNER then
-				tableLives[targ:SteamID64()] = newLives
-				DeathrunSafeChatPrint( ply, "Your have now have " .. lives .. " lives" )
-			else 
-				DeathrunSafeChatPrint( ply, "You are not a RUNNER" )
+		local newLives = tonumber(args[1])
+		
+		if DR:CanAccessCommand( ply, cmd ) then
+			if type(newLives) == "number" then
+				if newLives == 0 or newLives > 10 then DeathrunSafeChatPrint( ply, "The value of lives is [1-10]") return end
+				if ply:Team() == TEAM_RUNNER then
+					tableLives[ply:SteamID64()] = newLives
+					DeathrunSafeChatPrint( ply, "Your have now have " .. newLives .. " lives" )
+				else 
+					DeathrunSafeChatPrint( ply, "You are not a RUNNER" )
+				end
+			else
+				DeathrunSafeChatPrint( ply, "Only numbers.")
 			end
 		else
-			DeathrunSafeChatPrint( ply, "Only numbers.")
+			DeathrunSafeChatPrint( ply, "You are not allowed to do that.")
 		end
 	else
 		DeathrunSafeChatPrint( ply, "Could not execute command.")

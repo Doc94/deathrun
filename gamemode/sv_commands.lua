@@ -1,6 +1,6 @@
 print("Loading sv_commands.lua")
 
-local function FindPlayersByName( nick ) -- returns a table of players with name matching nick
+function FindPlayersByName( nick ) -- returns a table of players with name matching nick
 
 	if not nick then return {} end
 
@@ -19,7 +19,7 @@ local function FindPlayersByName( nick ) -- returns a table of players with name
 
 end
 
-local function AdminAccess( ply ) -- accounts for when ply = console (legacy)
+function AdminAccess( ply ) -- accounts for when ply = console (legacy)
 	--if true then return true end
 	if IsValid(ply) then
 		--local access = DR.Ranks[ply:GetUserGroup()] or 1
