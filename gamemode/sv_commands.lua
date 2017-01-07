@@ -36,7 +36,7 @@ function DR:GeneralAdminAccess( ply ) -- legacy
 	return AdminAccess( ply )
 end
 
-local function DeathrunSafeChatPrint( ply, msg )
+function DeathrunSafeChatPrint( ply, msg )
 	if IsValid( ply ) then
 		ply:DeathrunChatPrint( msg )
 	else

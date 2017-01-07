@@ -71,6 +71,9 @@ AddCSLuaFile( "sh_pointshopsupport.lua" )
 include("sh_statistics.lua")
 AddCSLuaFile("sh_statistics.lua")
 
+-- LiveSystem
+include("livesystem/sv_lives.lua")
+
 util.AddNetworkString("DeathrunChatMessage")
 util.AddNetworkString("DeathrunSyncMutelist")
 util.AddNetworkString("DeathrunNotification")
@@ -317,7 +320,7 @@ function GM:PlayerDeath( ply, inflictor, attacker )
 	timer.Simple(5, function()
 		if not IsValid( ply ) then return end -- incase they die and disconnect, prevents console errors.
 		if not ply:Alive() then
-
+		
 			ply.JustDied = true
 			--ply:SetTeam( TEAM_SPECTATOR )
 			--ply:Spawn() -- spawn then so we can put them in spectator while keeping their team
@@ -467,8 +470,8 @@ function GM:EntityTakeDamage( target, dmginfo )
 
 	if target:IsPlayer() then
 		if ROUND:GetCurrent() == ROUND_WAITING or ROUND:GetCurrent() == ROUND_PREP then
-			target:DeathrunChatPrint("You took "..tostring(dmginfo:GetDamage()).." damage.")
-			dmginfo:SetDamage(0)
+			target:DeathrunChatPrint("You took "..tostring(dmginfo:GetDamage()).." damage. but the damage has canceled¿")
+			--dmginfo:SetDamage(0)
 		end
 	end
 	if target:IsPlayer() and attacker:IsPlayer() then
