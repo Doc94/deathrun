@@ -35,6 +35,7 @@ msgs = {
 	"Enable Thirdperson, disable Autojump, change HUD position and more by pressing F2.",
 	"Change your HUD theme in the F2 menu.",
 	"Disconnecting while on the Death team is not allowed and will be considered death avoidance. You will be forced to play 1 extra rounds as Death.",
+	"This gamemode is a fork by Doc. SourceCode in https://github.com/Doc94/deathrun",
 }
 
 function DR:AddAnnouncement( ann )
