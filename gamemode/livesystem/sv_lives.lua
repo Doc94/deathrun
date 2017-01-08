@@ -4,7 +4,7 @@ tableLives = {} --Table for lives of runners
 --tableLives["76561198062831768"] = 2 --Debugtest
 
 --cvars system
-CreateConVar("deathrun_enablelives", "0", defaultFlags, "Set if lives are enable or disabled")
+CreateConVar("deathrun_enablelives", "1", defaultFlags, "Set if lives are enable or disabled")
 
 CreateConVar("deathrun_runner_lives", "2", defaultFlags, "Lifes for runners. <br> DONT SET TO 0")
 
@@ -23,7 +23,8 @@ cvars.AddChangeCallback( "deathrun_enablelives", function( convar_name, value_ol
 
     if newvalue2 == 1 then
         DR:ChatBroadcast("The lives system for runners is ENABLE")
-    else
+	else
+		tableLives = {} --Reset all lives datas
         DR:ChatBroadcast("The lives system for runners is DISABLE")
     end
 
@@ -41,56 +42,66 @@ cvars.AddChangeCallback( "deathrun_runner_lives", function( convar_name, value_o
 end )
 
 -- Death system
-hook.Add("DeathrunPlayerDeath", "DeathCheckLives", deathPlayer)
+hook.Add("DeathrunPlayerDeath", "deathPlayerLives",
+	function(victim, inflictor, attacker)
+		if GetConVar("deathrun_enablelives"):GetInt() == 0 then return end --Well not neeed read this
 
-function deathPlayer(victim, inflictor, attacker)
-	if GetConVar("deathrun_enablelives"):GetInt() == 0 then
-        PrintMessage(HUD_PRINTTALK ,"Player dead and the lives system is offline")
-        return
-    end --Well not neeed read this
+		if victim:Team() ~= TEAM_RUNNER then return end --Only runners pass here
 
-    if victim:Team() ~= TEAM_RUNNER then return end
-	
-	if tableLives[victim:SteamID64()] == nil then
-        tableLives[victim:SteamID64()] = 1
+		if tableLives[victim:SteamID64()] == nil then --Why not
+			tableLives[victim:SteamID64()] = GetConVar("deathrun_runner_lives"):GetInt()
+		end
+
+		tableLives[victim:SteamID64()] = tableLives[victim:SteamID64()] - 1
+
+		local livesPlayer = tableLives[victim:SteamID64()]
+
+		DR:ChatBroadcast("The player " .. victim:Name() .. " has dead and now have " .. livesPlayer .. " lives in this round")
+
+		if livesPlayer > 0 then
+			--victim:KillSilent()
+			victim:DeathrunChatPrint("You have " .. livesPlayer .. " lives, wait 10 seconds to respawn." )
+			timer.Simple(10, function()
+				victim:Spawn()
+			end)
+		else
+			victim:DeathrunChatPrint("You have lost all your lives :c")
+		end
+
 	end
-	
-	tableLives[victim:SteamID64()] = tableLives[victim:SteamID64()] - 1
-	
-	local livesPlayer = tableLives[victim:SteamID64()]
-	
-	DR:ChatBroadcast("The player " .. victim:Name() .. " has " .. livesPlayer .. " lives reaming")
-	
-	if livesPlayer > 0 then
-		--victim:KillSilent()
-		timer.Simple(10, function() 
-			victim:Spawn()
-		end)
-	else 
-		victim:DeathrunChatPrint("You have lost all your lives :c")
-	end
-	
-end
+)
+
+
 
 --Start round
-hook.Add("DeathrunBeginPrep", "Set lives", startRound)
+hook.Add("DeathrunBeginActive", "startRoundLives",
+	function()
+		print("Reload lives to start")
+		if GetConVar("deathrun_enablelives"):GetInt() == 0 then return end --Well not neeed read this
 
-function startRound()
-    DR:ChatBroadcast("Round started")
-    print("Start function lives start")
-	if GetConVar("deathrun_enablelives"):GetInt() == 0 then
-        return
-    end --Well not neeed read this
-    print("Reload lives")
-    DR:ChatBroadcast("This round have a system lives enabled.")
-	for k, v in ipairs( player.GetAll() ) do
-		--Check livesystem/sv_lives
-        print("Player " .. v:Name() .. " has team " .. v:Team())
-		if v:Team() == TEAM_RUNNER then
-			tableLives[v:SteamID64()] = GetConVar("deathrun_runner_lives"):GetInt()
+		tableLives = {} --Reset all lives datas
+
+		DR:ChatBroadcast("This round have a system lives enabled.")
+
+		for k, v in ipairs( player.GetAll() ) do
+			--Check livesystem/sv_lives
+			if v:Team() == TEAM_RUNNER then
+				tableLives[v:SteamID64()] = GetConVar("deathrun_runner_lives"):GetInt()
+			end
+		end
+		DR:ChatBroadcast("All runners have " .. GetConVar("deathrun_runner_lives"):GetInt() .. " lives in this round.")
+		print("Set lives to all runners to " .. GetConVar("deathrun_runner_lives"):GetInt() .. "")
+	end
+)
+
+function hasPlayersWithLives()
+	if GetConVar("deathrun_enablelives"):GetInt() == 0 then return false end --Well not neeed read this
+	for k,v in pairs(tableLives) do
+		if v > 0 then
+			return true
 		end
 	end
-	print("Set lives to all runners to " .. GetConVar("deathrun_runner_lives"):GetInt() .. "")
+	return false
 end
 
 --Register commands

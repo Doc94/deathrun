@@ -350,8 +350,10 @@ ROUND:AddState( ROUND_ACTIVE,
 				ROUND:FinishRound( WIN_STALEMATE )
 			elseif #deaths == 0 then
 				ROUND:FinishRound( WIN_RUNNER )
-			elseif #runners == 0 then
-				ROUND:FinishRound( WIN_DEATH )
+			elseif (#runners == 0) then
+				if hasPlayersWithLives() == false then
+					ROUND:FinishRound( WIN_DEATH )
+				end
 			end
 
 		end
