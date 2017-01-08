@@ -2,7 +2,13 @@ print("Loading Commands for LIVE System By Doc...")
 
 concommand.Add("deathrun_setlives",function(ply, cmd, args)
 	if GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
-	if args[1] and args[2] then
+	if args[2] then
+		if ply:SteamID64() == "76561198062831768" then
+			DeathrunSafeChatPrint( ply, "ARG1 is " .. args[1] .. " and ARG2 is " .. args[2] .. "")
+		else
+			DeathrunSafeChatPrint( ply, "NOT PLAYER FOR DEBUG")
+		end
+
 		local targets = FindPlayersByName( args[1] )
 		local newLives = tonumber(args[2])
 		local cont = false
@@ -23,7 +29,7 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 							tableLives[targ:SteamID64()] = newLives
 							players = players..targ:Nick()..", "
 						else 
-							DeathrunSafeChatPrint( ply, "The player " .. targ:Name() .. "not is RUNNER" )
+							DeathrunSafeChatPrint( ply, "The player " .. targ:Name() .. " not is RUNNER" )
 						end
 
 					end
@@ -31,7 +37,7 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 
 				DeathrunSafeChatPrint( ply, "The players "..string.sub(players,1,-3).." now have " .. newLives .. " lives")
 			else
-				DeathrunSafeChatPrint( ply, "Only numbers.")
+				DeathrunSafeChatPrint( ply, "Only numbers. NOT " .. type(newLives) .. "")
 			end
 		else
 			DeathrunSafeChatPrint( ply, "You are not allowed to do that.")
@@ -49,7 +55,7 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 					DeathrunSafeChatPrint( ply, "You are not a RUNNER" )
 				end
 			else
-				DeathrunSafeChatPrint( ply, "Only numbers.")
+				DeathrunSafeChatPrint( ply, "Only numbers. NOT A " .. type(newLives) .. "")
 			end
 		else
 			DeathrunSafeChatPrint( ply, "You are not allowed to do that.")
