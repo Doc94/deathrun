@@ -10,17 +10,21 @@ CreateConVar("deathrun_runner_lives", "2", defaultFlags, "Lifes for runners. <br
 
 
 cvars.AddChangeCallback( "deathrun_enablelives", function( convar_name, value_old, value_new )
-	if value_new > 1 then
+	local newvalue2 = tonumber(value_new)
+	if newvalue2 == nil then RunConsoleCommand("deathrun_enablelives " .. value_old .. "") return end
+	if newvalue2 > 1 then
 		RunConsoleCommand("deathrun_enablelives 1")
-	elseif value_new < 0 then
+	elseif newvalue2 < 0 then
 		RunConsoleCommand("deathrun_enablelives 0")
 	end
 end )
 
 cvars.AddChangeCallback( "deathrun_runner_lives", function( convar_name, value_old, value_new )
-	if value_new <= 0 then
+	local newvalue2 = tonumber(value_new)
+	if newvalue2 == nil then RunConsoleCommand("deathrun_enablelives " .. value_old .. "") return end
+	if newvalue2 <= 0 then
 		RunConsoleCommand("deathrun_runner_lives 1")
-	elseif value_new > 20 then
+	elseif newvalue2 > 20 then
 		RunConsoleCommand("deathrun_systemlives 20")
 	end
 end )
