@@ -107,6 +107,7 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 						if v:GetGroundEntity() then
                             if v:GetGroundEntity():GetMoveType() == MOVETYPE_NONE then
                                 tablePos[v:SteamID64()] = v:GetPos()
+                                v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
                             end
                         end
 					end
