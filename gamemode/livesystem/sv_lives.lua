@@ -106,7 +106,7 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 		timer.Create("savepostolives", 6, 0, function()
 			for k, v in ipairs( player.GetAll() ) do
 				if v:Team() == TEAM_RUNNER then
-					if v:GetMoveType() == MOVETYPE_WALK and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
+					if v:GetMoveType() == MOVETYPE_NONE and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
 						if v:GetGroundEntity() then
                             if v:GetGroundEntity():GetMoveType() == MOVETYPE_NONE then
 								if tablePosStatus[v:SteamID64()] == true then
