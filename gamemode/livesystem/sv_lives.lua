@@ -3,13 +3,14 @@ print("Loading LIVE System By Doc...")
 tableLives = {} --Table for lives of runners
 --tableLives["76561198062831768"] = 2 --Debugtest
 
+tablePos = {}
+
 cansetLives = false
 
 --cvars system
 CreateConVar("deathrun_enablelives", "1", defaultFlags, "Set if lives are enable or disabled")
 
 CreateConVar("deathrun_runner_lives", "2", defaultFlags, "Lifes for runners. <br> DONT SET TO 0")
-
 
 cvars.AddChangeCallback( "deathrun_enablelives", function( convar_name, value_old, value_new )
 	local newvalue2 = tonumber(value_new)
@@ -62,9 +63,13 @@ hook.Add("DeathrunPlayerDeath", "deathPlayerLives",
 
 		if livesPlayer > 0 then
 			--victim:KillSilent()
-			victim:DeathrunChatPrint("You have " .. livesPlayer .. " lives, wait 10 seconds to respawn." )
-			timer.Simple(10, function()
+			victim:DeathrunChatPrint("You have " .. livesPlayer .. " lives, wait 7 seconds to respawn." )
+			timer.Simple(7, function()
+				local posRespawn = tablePos[victim:SteamID64()]
 				victim:Spawn()
+				if posRespawn then
+					victim:SetPos(posRespawn)
+				end
 			end)
 		else
 			victim:DeathrunChatPrint("You have lost all your lives :c")
@@ -93,10 +98,29 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 		DR:ChatBroadcast("All runners have " .. GetConVar("deathrun_runner_lives"):GetInt() .. " lives in this round.")
 		print("Set lives to all runners to " .. GetConVar("deathrun_runner_lives"):GetInt() .. "")
 		cansetLives = true
+
+		--Save pos timmer
+		timer.Create("savepostolives", 6, 0, function()
+			for k, v in ipairs( player.GetAll() ) do
+				if v:Team() == TEAM_RUNNER then
+					if v:GetMoveType() == MOVETYPE_WALK and v:Alive() then
+						tablePos[v:SteamID64()] = v:GetPos()
+					end
+				end
+			end
+		end)
 	end
 )
 
---Start round
+--End round
+hook.Add("DeathrunBeginOver", "endRoundLives",
+	function()
+		tablePos = {}
+		timer.Remove("savepostolives")
+	end
+)
+
+--PreStart round
 hook.Add("DeathrunBeginPrep", "prestartRoundLives",
 	function()
 		print("Reload lives to start")
