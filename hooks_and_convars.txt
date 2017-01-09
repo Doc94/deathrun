@@ -103,6 +103,9 @@ SERVER CONVARS:
 
 CLIENT CONVARS:
 
+    deathrun_checkpoint
+        Save a checkpoint (only if you have lifes), and cancel automatic save for 1 cicle.
+
 	deathrun_crosshair_thickness <0-999>
 		Stroke thickness of the crosshair, in pixels.
 
