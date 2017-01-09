@@ -76,6 +76,21 @@ concommand.Add("deathrun_getlives",function(ply, cmd, args)
 
 end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
 
+concommand.Add("deathrun_checkpoint",function(ply, cmd, args)
+    if not GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
+    if tableLives[ply:SteamID64()] == nil then DeathrunSafeChatPrint( ply, "You dont have lives to save checkpoint." ) return end
+
+    tablePos[ply:SteamID64()] = ply:GetPos()
+    DeathrunSafeChatPrint( ply, "Checkpoint save." )
+    tablePosStatus[v:SteamID64()] = false
+
+end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
+
+DR:AddChatCommand("checkpoint", function(ply, args)
+    ply:ConCommand("deathrun_checkpoint")
+    PrintTable( args )
+end)
+
 DR:AddChatCommand("getlives", function(ply, args)
 	ply:ConCommand("deathrun_getlives "..(args[1] or ""))
 	PrintTable( args )

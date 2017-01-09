@@ -5,6 +5,8 @@ tableLives = {} --Table for lives of runners
 
 tablePos = {}
 
+tablePosStatus = {}
+
 cansetLives = false
 
 --cvars system
@@ -93,6 +95,7 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 			--Check livesystem/sv_lives
 			if v:Team() == TEAM_RUNNER then
 				tableLives[v:SteamID64()] = GetConVar("deathrun_runner_lives"):GetInt()
+				tablePosStatus[v:SteamID64()] = true
 			end
 		end
 		DR:ChatBroadcast("All runners have " .. GetConVar("deathrun_runner_lives"):GetInt() .. " lives in this round.")
@@ -106,8 +109,11 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 					if v:GetMoveType() == MOVETYPE_WALK and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
 						if v:GetGroundEntity() then
                             if v:GetGroundEntity():GetMoveType() == MOVETYPE_NONE then
-                                tablePos[v:SteamID64()] = v:GetPos()
-                                v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
+								if tablePosStatus[v:SteamID64()] == true then
+									tablePos[v:SteamID64()] = v:GetPos()
+									v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
+									tablePosStatus[v:SteamID64()] = false
+								end
                             end
                         end
 					end
