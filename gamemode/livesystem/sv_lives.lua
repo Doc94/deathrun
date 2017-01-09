@@ -112,8 +112,8 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 								if tablePosStatus[v:SteamID64()] == true then
 									tablePos[v:SteamID64()] = v:GetPos()
 									v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
-									tablePosStatus[v:SteamID64()] = false
 								end
+								tablePosStatus[v:SteamID64()] = true
                             end
                         end
 					end
