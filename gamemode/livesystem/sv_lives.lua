@@ -106,9 +106,10 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 		timer.Create("savepostolives", 6, 0, function()
 			for k, v in ipairs( player.GetAll() ) do
 				if v:Team() == TEAM_RUNNER then
-					if v:GetMoveType() == MOVETYPE_NONE and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
+					DR:ChatBroadcast("MOVE IS " .. v:GetMoveType())
+					if v:GetVelocity():IsZero() and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
 						if v:GetGroundEntity() then
-                            if v:GetGroundEntity():GetMoveType() == MOVETYPE_NONE then
+                            if v:GetGroundEntity():GetVelocity():IsZero() then
 								if tablePosStatus[v:SteamID64()] == true then
 									tablePos[v:SteamID64()] = v:GetPos()
 									v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
@@ -117,6 +118,7 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
                             end
                         end
 					end
+					DR:ChatBroadcast("end move")
 				end
 			end
 		end)

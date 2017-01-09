@@ -83,6 +83,7 @@ concommand.Add("deathrun_checkpoint",function(ply, cmd, args)
     tablePos[ply:SteamID64()] = ply:GetPos()
     DeathrunSafeChatPrint( ply, "Checkpoint save." )
     tablePosStatus[ply:SteamID64()] = false
+    -- debug DR:ChatBroadcast("MOVE IS " .. ply:GetMoveType() .. " AND VECTOR ZERO IS " .. tostring(ply:GetVelocity():IsZero()) .. " AND GROUND IS " .. tostring(ply:IsOnGround()) .. "")
 
 end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
 
