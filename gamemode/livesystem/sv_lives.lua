@@ -3,6 +3,8 @@ print("Loading LIVE System By Doc...")
 tableLives = {} --Table for lives of runners
 --tableLives["76561198062831768"] = 2 --Debugtest
 
+cansetLives = false
+
 --cvars system
 CreateConVar("deathrun_enablelives", "1", defaultFlags, "Set if lives are enable or disabled")
 
@@ -78,7 +80,6 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 	function()
 		print("Reload lives to start")
 		if GetConVar("deathrun_enablelives"):GetInt() == 0 then return end --Well not neeed read this
-
 		tableLives = {} --Reset all lives datas
 
 		DR:ChatBroadcast("This round have a system lives enabled.")
@@ -91,6 +92,16 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 		end
 		DR:ChatBroadcast("All runners have " .. GetConVar("deathrun_runner_lives"):GetInt() .. " lives in this round.")
 		print("Set lives to all runners to " .. GetConVar("deathrun_runner_lives"):GetInt() .. "")
+		cansetLives = true
+	end
+)
+
+--Start round
+hook.Add("DeathrunBeginPrep", "prestartRoundLives",
+	function()
+		print("Reload lives to start")
+		if GetConVar("deathrun_enablelives"):GetInt() == 0 then return end --Well not neeed read this
+		cansetLives = false
 	end
 )
 
