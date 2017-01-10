@@ -68,10 +68,12 @@ hook.Add("DeathrunPlayerDeath", "deathPlayerLives",
 			victim:DeathrunChatPrint("You have " .. livesPlayer .. " lives, wait 7 seconds to respawn." )
 			timer.Simple(7, function()
 				local posRespawn = tablePos[victim:SteamID64()]
-				victim:Spawn()
+
 				if posRespawn then
 					victim:SetPos(posRespawn)
 				end
+
+				victim:Spawn()
 			end)
 		else
 			victim:DeathrunChatPrint("You have lost all your lives :c")
@@ -106,7 +108,6 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 		timer.Create("savepostolives", 6, 0, function()
 			for k, v in ipairs( player.GetAll() ) do
 				if v:Team() == TEAM_RUNNER then
-					DR:ChatBroadcast("MOVE IS " .. v:GetMoveType())
 					if v:GetVelocity():IsZero() and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
 						if v:GetGroundEntity() then
                             if v:GetGroundEntity():GetVelocity():IsZero() then
@@ -118,7 +119,6 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
                             end
                         end
 					end
-					DR:ChatBroadcast("end move")
 				end
 			end
 		end)
