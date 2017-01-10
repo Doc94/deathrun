@@ -3,9 +3,7 @@ print("Loading LIVE System By Doc...")
 tableLives = {} --Table for lives of runners
 --tableLives["76561198062831768"] = 2 --Debugtest
 
-tablePos = {}
-
-tablePosStatus = {}
+tableCheckPoint = {} --Table for data checkpoint system
 
 cansetLives = false
 
@@ -67,7 +65,7 @@ hook.Add("DeathrunPlayerDeath", "deathPlayerLives",
 			--victim:KillSilent()
 			victim:DeathrunChatPrint("You have " .. livesPlayer .. " lives, wait 7 seconds to respawn." )
 			timer.Simple(7, function()
-				local posRespawn = tablePos[victim:SteamID64()]
+				local posRespawn = tableDataCheckPoint[victim:SteamID64()][3]
 
 				if posRespawn then
 					victim:SetPos(posRespawn:Add( Vector( 0, 1, 0 ) ))
@@ -89,36 +87,50 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 	function()
 		print("Reload lives to start")
 		if GetConVar("deathrun_enablelives"):GetInt() == 0 then return end --Well not neeed read this
-		tableLives = {} --Reset all lives datas
 
 		DR:ChatBroadcast("This round have a system lives enabled.")
 
 		for k, v in ipairs( player.GetAll() ) do
-			--Check livesystem/sv_lives
+			--Init table for checkpoint system
+			if not tableCheckPoint[v:SteamID64()] then
+				tableCheckPoint[v:SteamID64()] = {}
+				tableCheckPoint[v:SteamID64()].checkcicle = true --Check this cicle of timmer
+				tableCheckPoint[v:SteamID64()].automatic = true --Save automatic the checkpoint
+				tableCheckPoint[v:SteamID64()].pos = v:GetPos() --Default pos
+			end
+
+			if tableLives[v:SteamID64()] then --Remove old data
+				tableLives[v:SteamID64()] = nil
+			end
+
 			if v:Team() == TEAM_RUNNER then
 				tableLives[v:SteamID64()] = GetConVar("deathrun_runner_lives"):GetInt()
-				tablePosStatus[v:SteamID64()] = true
 			end
 		end
 		DR:ChatBroadcast("All runners have " .. GetConVar("deathrun_runner_lives"):GetInt() .. " lives in this round.")
 		print("Set lives to all runners to " .. GetConVar("deathrun_runner_lives"):GetInt() .. "")
-		cansetLives = true
+
+		cansetLives = true --Now you can change lives by command
 
 		--Save pos timmer
 		timer.Create("savepostolives", 6, 0, function()
 			for k, v in ipairs( player.GetAll() ) do
-				if v:Team() == TEAM_RUNNER then
-					if v:GetVelocity():IsZero() and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
-						if v:GetGroundEntity() then
-                            if v:GetGroundEntity():GetVelocity():IsZero() then
-								if tablePosStatus[v:SteamID64()] == true then
-									tablePos[v:SteamID64()] = v:GetPos()
-									v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
+				if v:Team() == TEAM_RUNNER then --If runner change of pos
+					if tableCheckPoint[v:SteamID64()].automatic then --If automatic is enable for the player
+						if tableCheckPoint[v:SteamID64()].checkcicle then --If player need check this cicle
+							if v:GetVelocity():IsZero() and not v:Crouching() and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
+								if v:GetGroundEntity() then
+									if v:GetGroundEntity():GetVelocity():IsZero() then
+										tableCheckPoint[v:SteamID64()].pos = v:GetPos()
+										v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
+									end
 								end
-								tablePosStatus[v:SteamID64()] = true
-                            end
-                        end
+							end
+						else --if player not pass the cicle then reactivate the cicle
+							tableCheckPoint[v:SteamID64()].checkcicle = true
+						end
 					end
+
 				end
 			end
 		end)
@@ -128,7 +140,7 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 --End round
 hook.Add("DeathrunBeginOver", "endRoundLives",
 	function()
-		tablePos = {}
+		tableCheckPoint[v:SteamID64()].checkcicle = true
 		timer.Remove("savepostolives")
 	end
 )

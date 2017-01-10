@@ -1,5 +1,6 @@
 print("Loading Commands for LIVE System By Doc...")
 
+--Command to set lives
 concommand.Add("deathrun_setlives",function(ply, cmd, args)
 	if GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
 	if not DR:CanAccessCommand( ply, cmd ) then DeathrunSafeChatPrint( ply, "You are not allowed to do that.") return end --Permissions
@@ -54,6 +55,12 @@ concommand.Add("deathrun_setlives",function(ply, cmd, args)
 
 end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
 
+DR:AddChatCommand("setlives", function(ply, args)
+	ply:ConCommand("deathrun_setlives "..(args[1] or "") .. " " .. (args[2] or ""))
+	PrintTable( args )
+end)
+
+--Command to get lives
 concommand.Add("deathrun_getlives",function(ply, cmd, args)
 	if not GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
 	if args[1] then
@@ -76,28 +83,45 @@ concommand.Add("deathrun_getlives",function(ply, cmd, args)
 
 end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
 
-concommand.Add("deathrun_checkpoint",function(ply, cmd, args)
-    if not GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
-    if tableLives[ply:SteamID64()] == nil then DeathrunSafeChatPrint( ply, "You dont have lives to save checkpoint." ) return end
-
-    tablePos[ply:SteamID64()] = ply:GetPos()
-    DeathrunSafeChatPrint( ply, "Checkpoint save." )
-    tablePosStatus[ply:SteamID64()] = false
-    -- debug DR:ChatBroadcast("MOVE IS " .. ply:GetMoveType() .. " AND VECTOR ZERO IS " .. tostring(ply:GetVelocity():IsZero()) .. " AND GROUND IS " .. tostring(ply:IsOnGround()) .. "")
-
-end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
-
-DR:AddChatCommand("checkpoint", function(ply, args)
-    ply:ConCommand("deathrun_checkpoint")
-    PrintTable( args )
-end)
-
 DR:AddChatCommand("getlives", function(ply, args)
 	ply:ConCommand("deathrun_getlives "..(args[1] or ""))
 	PrintTable( args )
 end)
 
-DR:AddChatCommand("setlives", function(ply, args)
-	ply:ConCommand("deathrun_setlives "..(args[1] or "") .. " " .. (args[2] or ""))
+
+--Command to create checkpoint
+concommand.Add("deathrun_checkpoint",function(ply, cmd, args)
+	if not GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
+	if tableLives[ply:SteamID64()] == nil then DeathrunSafeChatPrint( ply, "You dont have lives to save checkpoint." ) return end
+
+	tableCheckPoint[ply:SteamID64()].pos = ply:GetPos()
+	tableCheckPoint[ply:SteamID64()].checkcicle = false
+
+	DeathrunSafeChatPrint( ply, "Checkpoint save." )
+
+end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
+
+DR:AddChatCommand("checkpoint", function(ply, args)
+	ply:ConCommand("deathrun_checkpoint")
+	PrintTable( args )
+end)
+
+--Commando to toggle automatic checkpoint
+concommand.Add("deathrun_toggleautocheckpoint",function(ply, cmd, args)
+	if not GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
+	if tableLives[ply:SteamID64()] == nil then DeathrunSafeChatPrint( ply, "You dont have lives to toggle checkpoint." ) return end
+
+	if tableCheckPoint[ply:SteamID64()].automatic then
+		tableCheckPoint[ply:SteamID64()].automatic = false
+		DeathrunSafeChatPrint( ply, "Automatic CheckPoint set to DISABLE" )
+	else
+		tableCheckPoint[ply:SteamID64()].automatic = true
+		DeathrunSafeChatPrint( ply, "Automatic CheckPoint set to ENABLE" )
+	end
+
+end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
+
+DR:AddChatCommand("toggleautocheckpoint", function(ply, args)
+	ply:ConCommand("deathrun_toggleautocheckpoint")
 	PrintTable( args )
 end)
