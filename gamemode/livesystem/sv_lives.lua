@@ -70,7 +70,7 @@ hook.Add("DeathrunPlayerDeath", "deathPlayerLives",
 				local posRespawn = tablePos[victim:SteamID64()]
 
 				if posRespawn then
-					victim:SetPos(posRespawn)
+					victim:SetPos(posRespawn:Add( Vector( 0, 1, 0 ) ))
 				end
 
 				victim:Spawn()
