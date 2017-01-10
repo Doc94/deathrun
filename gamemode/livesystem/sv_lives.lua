@@ -59,21 +59,24 @@ hook.Add("DeathrunPlayerDeath", "deathPlayerLives",
 
 		local livesPlayer = tableLives[victim:SteamID64()]
 
-		DR:ChatBroadcast("The player " .. victim:Name() .. " has dead and now have " .. livesPlayer .. " lives in this round")
-
 		if livesPlayer > 0 then
+			DR:ChatBroadcast("The player " .. victim:Name() .. " has dead and now have " .. livesPlayer .. " lives in this round")
 			--victim:KillSilent()
 			victim:DeathrunChatPrint("You have " .. livesPlayer .. " lives, wait 7 seconds to respawn." )
 			timer.Simple(7, function()
-				local posRespawn = tableDataCheckPoint[victim:SteamID64()][3]
+				local posRespawn = tableCheckPoint[victim:SteamID64()].pos
 
-				if posRespawn then
-					victim:SetPos(posRespawn:Add( Vector( 0, 1, 0 ) ))
-				end
+				posRespawn:Add( Vector( 0, 1, 0 ) )
 
 				victim:Spawn()
+
+				if posRespawn then
+					victim:SetPos(posRespawn)
+				end
+
 			end)
 		else
+			DR:ChatBroadcast("The player " .. victim:Name() .. " has dead and not return in this round")
 			victim:DeathrunChatPrint("You have lost all your lives :c")
 		end
 
@@ -94,10 +97,11 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 			--Init table for checkpoint system
 			if not tableCheckPoint[v:SteamID64()] then
 				tableCheckPoint[v:SteamID64()] = {}
-				tableCheckPoint[v:SteamID64()].checkcicle = true --Check this cicle of timmer
 				tableCheckPoint[v:SteamID64()].automatic = true --Save automatic the checkpoint
 				tableCheckPoint[v:SteamID64()].pos = v:GetPos() --Default pos
 			end
+
+			tableCheckPoint[v:SteamID64()].checkcicle = true --Check this cicle of timmer
 
 			if tableLives[v:SteamID64()] then --Remove old data
 				tableLives[v:SteamID64()] = nil
@@ -116,21 +120,22 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 		timer.Create("savepostolives", 6, 0, function()
 			for k, v in ipairs( player.GetAll() ) do
 				if v:Team() == TEAM_RUNNER then --If runner change of pos
-					if tableCheckPoint[v:SteamID64()].automatic then --If automatic is enable for the player
-						if tableCheckPoint[v:SteamID64()].checkcicle then --If player need check this cicle
-							if v:GetVelocity():IsZero() and not v:Crouching() and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
-								if v:GetGroundEntity() then
-									if v:GetGroundEntity():GetVelocity():IsZero() then
-										tableCheckPoint[v:SteamID64()].pos = v:GetPos()
-										v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
+					if tableCheckPoint[v:SteamID64()] then --this not necesary... but...
+						if tableCheckPoint[v:SteamID64()].automatic then --If automatic is enable for the player
+							if tableCheckPoint[v:SteamID64()].checkcicle then --If player need check this cicle
+								if v:GetVelocity():IsZero() and not v:Crouching() and v:Alive() and v:WaterLevel() == 0 and v:IsOnGround() and not v:IsOnFire() then
+									if v:GetGroundEntity() then
+										if v:GetGroundEntity():GetVelocity():IsZero() then
+											tableCheckPoint[v:SteamID64()].pos = v:GetPos()
+											v:PrintMessage(HUD_PRINTCENTER ,"Checkpoint Save")
+										end
 									end
 								end
+							else --if player not pass the cicle then reactivate the cicle
+								tableCheckPoint[v:SteamID64()].checkcicle = true
 							end
-						else --if player not pass the cicle then reactivate the cicle
-							tableCheckPoint[v:SteamID64()].checkcicle = true
 						end
 					end
-
 				end
 			end
 		end)
@@ -140,7 +145,6 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 --End round
 hook.Add("DeathrunBeginOver", "endRoundLives",
 	function()
-		tableCheckPoint[v:SteamID64()].checkcicle = true
 		timer.Remove("savepostolives")
 	end
 )

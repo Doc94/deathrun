@@ -97,7 +97,7 @@ concommand.Add("deathrun_checkpoint",function(ply, cmd, args)
 	tableCheckPoint[ply:SteamID64()].pos = ply:GetPos()
 	tableCheckPoint[ply:SteamID64()].checkcicle = false
 
-	DeathrunSafeChatPrint( ply, "Checkpoint save." )
+	DeathrunSafeChatPrint( ply, "Checkpoint." )
 
 end, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
 
