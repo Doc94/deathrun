@@ -98,8 +98,10 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 			if not tableCheckPoint[v:SteamID64()] then
 				tableCheckPoint[v:SteamID64()] = {}
 				tableCheckPoint[v:SteamID64()].automatic = true --Save automatic the checkpoint
-				tableCheckPoint[v:SteamID64()].pos = v:GetPos() --Default pos
+
 			end
+
+			tableCheckPoint[v:SteamID64()].pos = v:GetPos() --Default pos
 
 			tableCheckPoint[v:SteamID64()].checkcicle = true --Check this cicle of timmer
 
