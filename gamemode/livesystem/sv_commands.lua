@@ -92,7 +92,10 @@ end)
 --Command to create checkpoint
 concommand.Add("deathrun_checkpoint",function(ply, cmd, args)
 	if not GetConVar("deathrun_enablelives"):GetInt() == 0 then DeathrunSafeChatPrint( ply, "The lives systems is disabled. (enable system using the convar deathrun_enablelives 1)") return end --Well not neeed read this
-	if tableLives[ply:SteamID64()] == nil then DeathrunSafeChatPrint( ply, "You dont have lives to save checkpoint." ) return end
+	if tableLives[ply:SteamID64()] == nil then DeathrunSafeChatPrint( ply, "You dont have set lives to save checkpoint." ) return end
+
+	if tableLives[ply:SteamID64()] == 0 then DeathrunSafeChatPrint( ply, "You dont have lives to save checkpoint." ) return end
+	if not ply:Alive() then DeathrunSafeChatPrint( ply, "CheckPoint Failed. You are dead." ) return end
 
 	tableCheckPoint[ply:SteamID64()].pos = ply:GetPos()
 	tableCheckPoint[ply:SteamID64()].checkcicle = false
