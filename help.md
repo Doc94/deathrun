@@ -28,4 +28,9 @@ Deaths can take advantage of this, however. Prediction and gamesense is key - Go
 * GetLives - !getlives or !getlives <player>
     * This command get lives to any runner
     * Only work if deathrun_enablelives is enabled
-
+* Toggle automatic checkpoint - !toggleautocheckpoint
+    * This command toggle into manual or automatic checkpoint
+    * Only work if deathrun_enablelives is enabled
+* Set checkpoint - !checkpoint
+    * This command save the position to respawn if your have lives, if the automatic checkpoint has enable then this command cancel the next automatic autosave, later save automatic again, this command have restrictions for use.
+    * Only work if deathrun_enablelives is enabled

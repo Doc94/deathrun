@@ -8,9 +8,18 @@ tableCheckPoint = {} --Table for data checkpoint system
 cansetLives = false
 
 --cvars system
-CreateConVar("deathrun_enablelives", "1", defaultFlags, "Set if lives are enable or disabled")
+if not ConVarExists("deathrun_enablelives") then
+	CreateConVar("deathrun_enablelives", "1", defaultFlags, "Set if lives are enable or disabled")
+end
 
-CreateConVar("deathrun_runner_lives", "2", defaultFlags, "Lifes for runners. <br> DONT SET TO 0")
+if not ConVarExists("deathrun_runner_lives") then
+	CreateConVar("deathrun_runner_lives", "4", defaultFlags, "Lifes for runners. DONT SET TO 0")
+end
+
+if not ConVarExists("deathrun_autocheckpoint") then
+	CreateConVar("deathrun_autocheckpoint", "0", defaultFlags, "Enable or Disable the automatic checkpoint")
+end
+
 
 cvars.AddChangeCallback( "deathrun_enablelives", function( convar_name, value_old, value_new )
 	local newvalue2 = tonumber(value_new)
@@ -97,8 +106,11 @@ hook.Add("DeathrunBeginActive", "startRoundLives",
 			--Init table for checkpoint system
 			if not tableCheckPoint[v:SteamID64()] then
 				tableCheckPoint[v:SteamID64()] = {}
-				tableCheckPoint[v:SteamID64()].automatic = true --Save automatic the checkpoint
-
+				if GetConVar("deathrun_autocheckpoint"):GetInt() == 0 then
+					tableCheckPoint[v:SteamID64()].automatic = false --Save automatic the checkpoint
+				else
+					tableCheckPoint[v:SteamID64()].automatic = true --Save automatic the checkpoint
+				end
 			end
 
 			tableCheckPoint[v:SteamID64()].pos = v:GetPos() --Default pos

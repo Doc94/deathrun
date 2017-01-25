@@ -101,6 +101,9 @@ SERVER CONVARS:
 	    Lives for runners (deaths not have lives, ARE DEATHS :D), This cvar only work if deathrun_enablelives is enabled.
 	    Dont set this convar to 0.
 
+	deathrun_autocheckpoint <0-1>
+	    Enable system of automatic checkpont (BETA), if the system has disable the checkpoints are manual.
+
 CLIENT CONVARS:
 
     deathrun_checkpoint
